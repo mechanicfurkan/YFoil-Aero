@@ -70,7 +70,7 @@ YFoil_Aero_v87.html dosyasını tarayıcıda aç.
 ```
 
 Canlı dene: **[yfoil-aero.netlify.app](#)**  
-*(Netlify'a yüklendikten sonra bu link güncellenecektir)*
+https://yfoil-aero.netlify.app
 
 ---
 
