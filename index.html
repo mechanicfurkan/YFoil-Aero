@@ -4,40 +4,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>YFoil Aero — Developed by Furkan Yılmaz</title>
+  <title>YFoil Aero — Feel the Physics of Wings</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%88%3C/text%3E%3C/svg%3E">  <meta name="description"
     content="YFoil Aero v7.9: VIE Viscous-Inviscid panel solver (Hess-Smith+Head BL), 2D wind tunnel smoke streamline view, snapshot overlay, extended NACA database.">
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    :root {      --pri: #0f172a;
-      --sec: #3b82f6;
-      --acc: #ef4444;
-      --ok: #10b981;
-      --warn: #f59e0b;
-      --purple: #8b5cf6;
-      --cyan: #0ea5e9;
-      --bg: #f0f4f8;
-      --surf: #ffffff;
-      --surf2: #f8fafc;
-      --bdr: #e2e8f0;
-      --bdr2: #cbd5e1;
-      --txt: #0f172a;
-      --txt2: #334155;
-      --mut: #64748b;
-      --mut2: #94a3b8;
-      --sh1: 0 1px 3px rgb(0 0 0/.07), 0 1px 2px rgb(0 0 0/.04);
-      --sh2: 0 4px 16px -2px rgb(0 0 0/.10), 0 2px 6px -2px rgb(0 0 0/.06);
-      --sh3: 0 10px 30px -4px rgb(0 0 0/.12), 0 4px 10px -4px rgb(0 0 0/.07);
-      --r4: 4px;
-      --r8: 8px;
-      --r12: 12px;
-      --r16: 16px;
-      --mono: 'JetBrains Mono', monospace;
-      --sec-bg: #eff6ff;
-      --sec-bdr: #bfdbfe;
-      --ok-bg: #f0fdf4;
-      --acc-bg: #fff1f2;
+    :root {
+      --pri: #0f172a; --sec: #3b82f6; --acc: #ef4444; --ok: #10b981; --warn: #f59e0b;
+      --purple: #8b5cf6; --cyan: #0ea5e9; --bg: #f0f4f8; --surf: #ffffff; --surf2: #f8fafc;
+      --bdr: #e2e8f0; --bdr2: #cbd5e1; --txt: #0f172a; --txt2: #334155; --mut: #64748b;
+      --mut2: #94a3b8; --sh1: 0 1px 3px rgb(0 0 0/.07); --sh2: 0 4px 16px -2px rgb(0 0 0/.10);
+      --r8: 8px; --r12: 12px; --r16: 16px; --mono: 'JetBrains Mono', monospace;
+      --sec-bg: #eff6ff; --sec-bdr: #bfdbfe; --ok-bg: #f0fdf4; --acc-bg: #fff1f2;
+    }
+    [data-theme="dark"] {
+      --pri: #f8fafc; --bg: #0f172a; --surf: #1e293b; --surf2: #0f172a;
+      --bdr: #334155; --bdr2: #475569; --txt: #f8fafc; --txt2: #cbd5e1;
+      --mut: #94a3b8; --mut2: #64748b; --sec-bg: #1e3a8a; --sec-bdr: #3b82f6;
+      --ok-bg: #064e3b; --acc-bg: #7f1d1d; --sh1: 0 4px 6px -1px rgba(0,0,0,0.3);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,6 +43,11 @@
     @keyframes stallpulse { from { opacity:1; transform:scale(1) } to { opacity:.5; transform:scale(.97) } }
 
     .hbtns { display: flex; align-items: center; gap: 8px; }
+    #btn-theme { padding: 7px; border-radius: 50%; width: 34px; height: 34px; justify-content: center; }
+    body.stalled-warning::after { content: ''; position: fixed; inset: 0; border: 6px solid var(--acc); pointer-events: none; z-index: 9999; animation: stall-flash 0.4s infinite alternate; box-shadow: inset 0 0 100px rgba(239,68,68,0.3); }
+    @keyframes stall-flash { from { opacity: 0; } to { opacity: 0.6; } }
+    #stall-overlay { display: none; position: fixed; inset: 0; background: radial-gradient(circle, rgba(239,68,68,0) 40%, rgba(239,68,68,0.4) 100%); pointer-events: none; z-index: 9998; animation: stall-glow 0.6s infinite alternate; }
+    @keyframes stall-glow { from { opacity: 0.3; } to { opacity: 0.8; } }
     .hbtns button { border: 1px solid var(--bdr); background: var(--surf); color: var(--txt2); padding: 7px 16px; border-radius: var(--r8); cursor: pointer; font-size: .8rem; font-weight: 600; transition: all .15s ease; font-family: 'Space Grotesk', sans-serif; display: flex; align-items: center; gap: 6px; }
     .hbtns button:hover { border-color: var(--sec); color: var(--sec); background: var(--sec-bg); }
     .hbtns button svg { width: 14px; height: 14px; }
@@ -188,6 +178,7 @@
 <body>
 
   <div id="toast"></div>
+  <div id="stall-overlay"></div>
 
   <header>
     <div class="logo">
@@ -204,6 +195,8 @@
       </div>
     </div>
     <div class="hbtns">
+      <div id="stall-badge" style="display:none; background:var(--acc); color:#fff; padding:4px 12px; border-radius:20px; font-size:.7rem; font-weight:700; margin-right:8px; animation:stallpulse .6s infinite alternate;">⚠️ STALL WARNING</div>
+      <button id="btn-theme" onclick="toggleTheme()" title="Toggle Dark Mode">🌓</button>
       <button id="btn-optimize" class="hbtn-primary">⚡ Optimize L/D</button>
       <button id="btn-snapshot" onclick="takeSnapshot()">📌 Snapshot</button>
       <button id="btn-clear-snap" onclick="clearSnapshots()">🗑 Clear</button>
@@ -218,6 +211,10 @@
       <button onclick="exportSTL()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
         Export STL
+      </button>
+      <button onclick="generateReport()" style="background: linear-gradient(135deg, #059669, #10b981) !important; color: #fff !important; border: none !important;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Report
       </button>
     </div>
   </header>
@@ -2112,6 +2109,77 @@
       showToast('Snapshots cleared');
     }
 
+    function generateReport() {
+      const p = getParams();
+      const r = calc(p, p.alpha);
+      const atm = isa(p.alt);
+      const date = new Date().toLocaleString();
+      
+      let report = `==================================================\n`;
+      report += `          YFOIL AERO - ENGINEERING REPORT          \n`;
+      report += `      Developed by Furkan Yılmaz (@mechfurkan)     \n`;
+      report += `==================================================\n`;
+      report += `Report Date: ${date}\n\n`;
+
+      report += `[1. WING GEOMETRY & DESIGN]\n`;
+      report += `--------------------------------------------------\n`;
+      report += `Airfoil (Root): NACA ${p.nacaRoot}\n`;
+      report += `Airfoil (Tip) : NACA ${p.nacaTip}\n`;
+      report += `Total Span    : ${(2*p.span).toFixed(3)} m\n`;
+      report += `Wing Area (S) : ${r.S.toFixed(4)} m²\n`;
+      report += `Aspect Ratio  : ${r.AR.toFixed(3)}\n`;
+      report += `Taper Ratio   : ${(p.tipC/p.rootC).toFixed(3)}\n`;
+      report += `Root Chord    : ${p.rootC.toFixed(3)} m\n`;
+      report += `Tip Chord     : ${p.tipC.toFixed(3)} m\n`;
+      report += `MAC           : ${r.mac.toFixed(3)} m\n`;
+      report += `Sweep (LE)    : ${p.leSI}° (In) / ${p.leSO}° (Out)\n`;
+      report += `Dihedral      : ${p.dih}°\n`;
+      report += `Twist         : ${p.twR}° (Root) / ${p.twT}° (Tip)\n\n`;
+
+      report += `[2. ATMOSPHERIC & FLIGHT CONDITIONS]\n`;
+      report += `--------------------------------------------------\n`;
+      report += `Altitude      : ${p.alt} m\n`;
+      report += `Air Density   : ${atm.rho.toFixed(4)} kg/m³\n`;
+      report += `Velocity (V)  : ${p.vel.toFixed(2)} m/s\n`;
+      report += `Dynamic Press : ${r.q.toFixed(2)} Pa\n`;
+      report += `Mach Number   : ${r.Mach.toFixed(3)}\n`;
+      report += `Reynolds (MAC): ${(r.Re_mac/1e6).toFixed(3)}M\n`;
+      report += `Angle of Attack: ${p.alpha.toFixed(2)}°\n\n`;
+
+      report += `[3. AERODYNAMIC PERFORMANCE]\n`;
+      report += `--------------------------------------------------\n`;
+      report += `Lift Force    : ${r.Lift.toFixed(2)} N\n`;
+      report += `Drag Force    : ${r.Drag.toFixed(3)} N\n`;
+      report += `CL (Total)    : ${r.CL.toFixed(5)}\n`;
+      report += `CD (Total)    : ${r.CD.toFixed(6)}\n`;
+      report += `  - CD_profile: ${r.CD_profile.toFixed(6)}\n`;
+      report += `  - CD_induced: ${r.CDi.toFixed(6)}\n`;
+      report += `  - CD_wave   : ${r.CD_wave.toFixed(6)}\n`;
+      report += `Cm (AC)       : ${r.Cm_ac.toFixed(5)}\n`;
+      report += `L/D Ratio     : ${r.LoD.toFixed(3)}\n`;
+      report += `Efficiency (e): ${r.e.toFixed(3)}\n\n`;
+
+      report += `[4. STABILITY & STALL ANALYSIS]\n`;
+      report += `--------------------------------------------------\n`;
+      report += `Stall Status  : ${r.stalled ? '!!! CRITICAL STALL !!!' : 'STABLE'}\n`;
+      report += `Stall Angle   : ${r.alpha_stall.toFixed(2)}°\n`;
+      report += `Stall Type    : ${r.stall_type}\n`;
+      report += `CL_max        : ${r.CLmax.toFixed(3)}\n`;
+      report += `Static Margin : ${document.getElementById('val-sm').textContent}\n`;
+      report += `Cm_alpha      : ${document.getElementById('val-cma').textContent}\n\n`;
+
+      report += `==================================================\n`;
+      report += `      Generated via YFoil Aero v7.9 Engine        \n`;
+      report += `      Simulation Methodology: VIE + NLLT          \n`;
+      report += `==================================================\n`;
+
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([report], {type: 'text/plain'}));
+      a.download = `YFoil_Detailed_Report_${p.nacaRoot}_${p.alpha}deg.txt`;
+      a.click();
+      showToast("Detailed Engineering Report Generated!");
+    }
+
     function exportSnapshots() {
       const data=snapshots.map(s=>({label:s.label,sweep:s.sw}));
       const a=document.createElement('a');
@@ -2726,6 +2794,14 @@
     }
 
     // ─── update() — main UI refresh ───────────────────────────────────────────────
+    function toggleTheme() {
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('yfoil-theme', theme);
+      update(); // Refresh plots for theme
+    }
+    if(localStorage.getItem('yfoil-theme')==='dark') document.documentElement.setAttribute('data-theme', 'dark');
+
     function update() {
       let p, r;
       try {
@@ -2741,7 +2817,13 @@
       lastParams=p;
 
       const stallBadge=document.getElementById('stall-badge');
-      if(stallBadge) stallBadge.style.display=r.stalled?'block':'none';
+      const stallOverlay=document.getElementById('stall-overlay');
+      if(stallBadge) {
+        stallBadge.style.display=r.stalled?'block':'none';
+        if(stallOverlay) stallOverlay.style.display=r.stalled?'block':'none';
+        if(r.stalled) document.body.classList.add('stalled-warning');
+        else document.body.classList.remove('stalled-warning');
+      }
 
       flashT('val-lift',r.Lift/1000); sv('val-lift',nf(r.Lift/1000,2));
       flashT('val-drag',r.Drag/1000); sv('val-drag',nf(r.Drag/1000,3));
@@ -2917,3 +2999,4 @@
 </body>
 
 </html>
+
