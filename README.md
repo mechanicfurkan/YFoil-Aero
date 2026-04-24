@@ -99,6 +99,6 @@ Tam metin: [LICENSE](./LICENSE)
 
 ## Yazar
 
-Bu proje, genç havacılık mühendislerine sezgisel ve referans kalitesinde bir araç sunmak amacıyla geliştirilmiştir.
+Bu proje, genç havacılık mühendislerine sezgisel ve referans kalitesinde bir araç sunmak amacıyla Yıldız Teknik Üniversitesi Makine Mühendisliği öğrencisi tarafından geliştirilmiştir. Created by M. Furkan YILMAZ.
 
 Referans literatür: Abbott & von Doenhoff (1959) · McCormick (1979) · Raymer (1992) · Drela XFOIL
