@@ -69,8 +69,8 @@ Herhangi bir kurulum gerekmez. Tek HTML dosyasıdır:
 YFoil_Aero_v87.html dosyasını tarayıcıda aç.
 ```
 
-Canlı dene: **[yfoil-aero.netlify.app](#)**  
-https://yfoil-aero.netlify.app
+Canlı dene: **[https://mechanicfurkan.github.io/YFoil-Aero/](#)**  
+https://mechanicfurkan.github.io/YFoil-Aero/ 
 
 ---
 
