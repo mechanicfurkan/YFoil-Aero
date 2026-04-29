@@ -6,8 +6,8 @@
 
 **Prepared by:**  
 Furkan Yılmaz  
-Mechanical Engineering  
-2025
+Mechanical Engineering, TU Yildiz  
+2026
 
 ## **Abstract**
 
