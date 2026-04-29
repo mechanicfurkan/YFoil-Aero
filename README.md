@@ -4,8 +4,7 @@
 Prandtl Kaldırma Hattı Teorisi, viskoz-inviskoz panel çözücü ve gerçek NACA profil veritabanı kullanarak kırık kanat geometrilerini analiz eder.
 
 > **Amaç:** Eğitim ve ön tasarım. Sertifikasyon veya uçuş kritik mühendislik kararlarında tek başına kullanılmamalıdır.
-> ![YFoil Aero Demo](foilteest.gif)
-
+![YFoil Aero Demo](Foilteest.gif)
 ---
 
 ## Ne Yapar?
