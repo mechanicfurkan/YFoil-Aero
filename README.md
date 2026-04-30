@@ -82,7 +82,7 @@ Live demo: **[https://mechanicfurkan.github.io/YFoil-Aero/](https://mechanicfurk
 | v7.0 | Transition to LLT, actual NACA PDB, bilinear Re+α interpolation |
 | v7.5 | VIE viscous-inviscid panel solver, 2D wind tunnel view |
 | v7.9 | Simplified panel system, eliminated CDf double counting, al0 caching |
-| v8.x | UI branding enhancements, dynamic dark mode for 3D wing visualization, aero performance optimizations achieving stable 60 FPS (debouncing & geometry caching), and robust external airfoil import fixes. |
+| v8.x | An update request has been created to replace NLLT with the Vortex Lattice Method (VLM). UI branding enhancements, dynamic dark mode for 3D wing visualization, aero performance optimizations achieving stable 60 FPS (debouncing & geometry caching), and robust external airfoil import fixes. 
 
 ---
 
